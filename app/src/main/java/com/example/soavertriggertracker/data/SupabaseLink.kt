@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 interface LogSupabaseLink {
     suspend fun getLogsDTO(): List<LogDTO>?
-    suspend fun putLogDTO(log: LogDTOout)
+    suspend fun putLogDTO(log: LogDTOout): String
     suspend fun getLogDTO(id: String): LogDTO?
     suspend fun deleteLogDTO(id: String)
     //suspend fun updateLogDTO(log: LogDTO)
@@ -36,7 +36,7 @@ class LogSupabaseLinkImpl @Inject constructor(
      * @throws Exception if id of log attempted to insert cannot be immediately fetched
      * @throws IllegalArgumentException if log has no FactorRecords
      */
-    override suspend fun putLogDTO(log: LogDTOout) {
+    override suspend fun putLogDTO(log: LogDTOout): String {
         val uid = auth.currentUserOrNull()?.id
             ?: throw IllegalStateException("User is not logged in when adding log") //executes on uid null (?)
 
@@ -58,7 +58,7 @@ class LogSupabaseLinkImpl @Inject constructor(
                 }
             ) {
                 select()
-            }.decodeSingle<LogDTO>() //throws is not found
+            }.decodeSingle<LogDTO>() //throws if not found
 
             //insert factor records
             postgrest.from("FactorRecords").insert(
@@ -85,6 +85,7 @@ class LogSupabaseLinkImpl @Inject constructor(
                     }
                 )
             }
+            return@withContext insertedLog.id
         }
     }
 
