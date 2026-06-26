@@ -1,7 +1,10 @@
+import java.util.Properties
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.serialization") version "2.4.0"
 }
 
 android {
@@ -20,6 +23,19 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        val localPropertiesFile = project.rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { properties.load(it) }
+        }
+
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"${properties.getProperty("SUPABASE_PUBLISHABLE_KEY") ?: ""}\"")
+        buildConfigField("String", "SECRET", "\"${properties.getProperty("SECRET") ?: ""}\"")
+        buildConfigField("String", "SUPABASE_URL", "\"${properties.getProperty("SUPABASE_URL") ?: ""}\"")
+
+        buildConfigField("String", "SUPABASE_TEST_USER_EMAIL", "\"${properties.getProperty("SUPABASE_TEST_USER_EMAIL") ?: ""}\"")
+        buildConfigField("String", "SUPABASE_TEST_USER_PASSWORD", "\"${properties.getProperty("SUPABASE_TEST_USER_PASSWORD") ?: ""}\"")
     }
 
     buildTypes {
@@ -35,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -57,8 +74,20 @@ dependencies {
     implementation(libs.play.services.wearable)
 
     implementation(libs.androidx.navigation.compose)
-    // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
-    // JSON serialization library, works with the Kotlin serialization plugin
-    implementation(libs.kotlinx.serialization.json)
+
+    implementation(platform(libs.bom))
+    implementation(libs.postgrest.kt)
+    implementation(libs.ktor.client.android)
+    implementation(libs.supabase.postgrest.kt)
+    implementation(libs.storage.kt)
+    implementation(libs.auth.kt)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.utils)
+
+    implementation(libs.hilt.android)
+    annotationProcessor(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    testImplementation(libs.kotlinx.coroutines.test)
 }
