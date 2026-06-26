@@ -7,5 +7,3 @@ Sensory overloads affect a significant proportion of the autistic population in 
 This project addresses that gap through the development of a paired smartwatch and mobile application designed to simplify the tracking of sensory overload triggers using both automatic environmental sensing and data input from the user. The system analyses collected data to present clear summaries and provides alerts when conditions are identified as likely to be triggering for the individual. 
 
 The resulting system represents a meaningful improvement over the current standard of diary-based tracking. It is a unique product filling a gap in the market for autistic individuals seeking a convenient and modern way of identifying their sensory triggers.
-
-<img width="2048" height="1000" alt="github img" src="https://github.com/user-attachments/assets/64c0e355-1247-4d63-866d-a6d14a764c80" />
