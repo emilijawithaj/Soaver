@@ -1,5 +1,6 @@
 package com.example.soavertriggertracker.data.dataTransferObjs
 
+import com.example.soavertriggertracker.data.FactorCategory
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,5 +16,8 @@ data class FactorDTO(
     val name: String,
 
     @SerialName("is_numeric")
-    val isNumeric: Boolean
+    val isNumeric: Boolean,
+
+    @SerialName("category")
+    val category: FactorCategory
 )

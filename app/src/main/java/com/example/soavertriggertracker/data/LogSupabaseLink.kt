@@ -1,5 +1,7 @@
 package com.example.soavertriggertracker.data
 
+import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTO
+import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTOout
 import com.example.soavertriggertracker.data.dataTransferObjs.LogDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.LogDTOout
 import io.github.jan.supabase.auth.Auth
@@ -16,11 +18,16 @@ import javax.inject.Inject
  * Execute CRUD operations for Logs in Supabase, using DTOs
  */
 interface LogSupabaseLink {
-    suspend fun getLogsDTO(): List<LogDTO>?
+    suspend fun getLogsDTO(): List<LogDTO>
     suspend fun putLogDTO(log: LogDTOout): String
     suspend fun getLogDTO(id: String): LogDTO?
     suspend fun deleteLogDTO(id: String)
+
     //suspend fun updateLogDTO(log: LogDTO)
+    suspend fun putFactorDTO(factor: FactorDTOout): String
+    suspend fun getFactorDTO(id: String): FactorDTO?
+    suspend fun getFactorsDTO(): List<FactorDTO>
+    suspend fun deleteFactorDTO(id: String)
 }
 
 
@@ -39,6 +46,9 @@ class LogSupabaseLinkImpl @Inject constructor(
     override suspend fun putLogDTO(log: LogDTOout): String {
         val uid = auth.currentUserOrNull()?.id
             ?: throw IllegalStateException("User is not logged in when adding log") //executes on uid null (?)
+        if (log.factorRecords.isEmpty()) {
+            throw IllegalArgumentException("Log cannot have no FactorRecords")
+        }
 
         return withContext(Dispatchers.IO) {
             //insert Log table
@@ -109,7 +119,8 @@ class LogSupabaseLinkImpl @Inject constructor(
                         Factor:Factors (
                             id,
                             name,
-                            is_numeric
+                            is_numeric,
+                            category
                         )
                     ),
                     Tags (
@@ -126,6 +137,10 @@ class LogSupabaseLinkImpl @Inject constructor(
     }
 
 
+    /**
+     * Gets a specific log from db by id
+     * @return The log as a DTO, null if not found
+     */
     override suspend fun getLogDTO(id: String): LogDTO? {
         return withContext(Dispatchers.IO) {
             postgrest.from("Logs").select(
@@ -141,7 +156,8 @@ class LogSupabaseLinkImpl @Inject constructor(
                         Factor:Factors (
                             id,
                             name,
-                            is_numeric
+                            is_numeric,
+                            category
                         )
                     ),
                     Tags (
@@ -158,6 +174,9 @@ class LogSupabaseLinkImpl @Inject constructor(
         }
     }
 
+    /**
+     * Removes log by id if present. Cascade policy removes nested table rows
+     */
     override suspend fun deleteLogDTO(id: String) {
         return withContext(Dispatchers.IO) {
             postgrest.from("Logs").delete {
@@ -168,22 +187,84 @@ class LogSupabaseLinkImpl @Inject constructor(
         }
     }
 
-    /* TODO Implement UPDATE
     /**
-     * Updates a LogDTO in the db by deleting and reinserting it
-     * @throws IllegalArgumentException if called on Log with no id
+     * Attempts to insert a Factor into the db
      */
-    override suspend fun updateLogDTO(log: LogDTO){
-        if (log.id == null) {
-            throw IllegalArgumentException("Cannot call update on new Log (LogDTO id is null)")
-        }
-        try {
-            withContext(Dispatchers.IO) {
-                postgrest.from("Logs").upsert(log)
-            }
-        } catch (e: Exception) {
-            throw e
+    override suspend fun putFactorDTO(factor: FactorDTOout): String {
+        val uid = auth.currentUserOrNull()?.id
+            ?: throw IllegalStateException("User is not logged in when adding log") //executes on uid null (?)
+
+        return withContext(Dispatchers.IO) {
+            //insert factor
+            val insertedFactor = postgrest.from("Factors").upsert(
+                buildJsonObject {
+                    put("user_id", uid)
+                    put("name", factor.name)
+                    put("is_numeric", factor.isNumeric)
+                    put("category", factor.category.toString())
+                    if (factor.id != null) {
+                        put("id", factor.id)
+                    }
+                }
+            ) {
+                select()
+            }.decodeSingle<FactorDTO>()
+
+            return@withContext insertedFactor.id
         }
     }
-    */
+
+    /**
+     * Gets a specific factor from db by id
+     * @return factor as DTO, null if not found
+     */
+    override suspend fun getFactorDTO(id: String): FactorDTO? {
+        return withContext(Dispatchers.IO) {
+            postgrest.from("Factors").select(
+                columns = Columns.raw(
+                    """
+                    id,
+                    name,
+                    is_numeric,
+                    category
+                    """.trimIndent()
+                )
+            ) {
+                filter {
+                    eq("id", id)
+                }
+            }.decodeSingleOrNull<FactorDTO>()
+        }
+    }
+
+    /**
+     * Gets all factors from db. May return empty list
+     */
+    override suspend fun getFactorsDTO(): List<FactorDTO> {
+        return withContext(Dispatchers.IO) {
+            postgrest.from("Factors").select(
+                columns = Columns.raw(
+                    """
+                    id,
+                    name,
+                    is_numeric,
+                    category
+                    """.trimIndent()
+                )
+            ).decodeList<FactorDTO>()
+        }
+    }
+
+    /**
+     * Removes factor by id if present
+     */
+    override suspend fun deleteFactorDTO(id: String) {
+        return withContext(Dispatchers.IO) {
+            postgrest.from("Factors").delete {
+                filter {
+                    eq("id", id)
+                }
+            }
+        }
+    }
 }

@@ -1,7 +1,5 @@
 package com.example.soavertriggertracker.data
 
-import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTO
-import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTOout
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorRecordDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorRecordDTOout
 import com.example.soavertriggertracker.data.dataTransferObjs.LogDTO
@@ -41,6 +39,7 @@ fun FactorRecordDTO.toDomain(): FactorRecord {
     return FactorRecord(
         id = id,
         factorId = factorDto.id,
+        factorCategory = factorDto.category,
         factorName = factorDto.name,
         isNumeric = factorDto.isNumeric,
         wasPresent = boolVal,
@@ -78,7 +77,7 @@ fun Log.toDTO(): LogDTOout {
 }
 
 /**
- * Processes a FactorRecord to a FactorRecordDTO, seperating Factor into FactorDTO
+ * Processes a FactorRecord to a FactorRecordDTO
  * @return FactorRecordDTO
  */
 fun FactorRecord.toDTO(): FactorRecordDTOout {

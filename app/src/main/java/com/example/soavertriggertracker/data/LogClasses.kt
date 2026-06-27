@@ -2,6 +2,7 @@ package com.example.soavertriggertracker.data
 
 import kotlin.time.Instant
 
+enum class FactorCategory { VISUAL, AUDITORY, TACTILE, OLFACTORY, GUSTATORY, INTERNAL }
 
 /**
  * Factor record (part of Log) with Factor details encoded in it
@@ -9,6 +10,7 @@ import kotlin.time.Instant
 data class FactorRecord(
     var id: String? = null,
     var factorId: String,
+    var factorCategory: FactorCategory,
     var factorName: String,
     var isNumeric: Boolean,
     var wasPresent: Boolean,
@@ -18,7 +20,7 @@ data class FactorRecord(
 /**
  * Log. Of factor records and tags
  */
-data class Log (
+data class Log(
     var id: String? = null,
     var factorRecords: ArrayList<FactorRecord>,
     var tags: ArrayList<Tag>,
@@ -28,7 +30,7 @@ data class Log (
 /**
  * Tag.
  */
-data class Tag (
+data class Tag(
     var id: String? = null,
     var value: String
 )
