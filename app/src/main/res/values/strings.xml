@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SoaverTriggerTracker</string>
+    <string name="edit">Edit</string>
+    <string name="search_logs_field">Search Logs</string>
+    <string name="click_to_expand_icon_desc">Click to expand or shrink</string>
+    <string name="empty_string" />
+    <string name="home_nav_text">Home</string>
+    <string name="factors_nav_text">All Factors</string>
+    <string name="logs_nav_text">Logs</string>
 </resources>

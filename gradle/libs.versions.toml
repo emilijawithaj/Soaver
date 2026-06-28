@@ -32,8 +32,10 @@ guava = "33.2.1-android"
 tilesTooling = "1.5.0"
 tilesToolingPreview = "1.5.0"
 watchfaceComplicationsDataSourceKtx = "1.3.0"
+material3WindowSizeClass = "1.4.0"
 
 [libraries]
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -80,6 +82,7 @@ androidx-watchface-complications-data-source-ktx = { group = "androidx.wear.watc
 postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 storage-kt = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "bom" }
 supabase-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "bom" }
+androidx-compose-material3-window-size-class1 = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3WindowSizeClass" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
