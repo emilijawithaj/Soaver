@@ -34,3 +34,14 @@ data class Tag(
     var id: String? = null,
     var value: String
 )
+
+/**
+ * Factor.
+ */
+data class Factor(
+    var id: String? = null,
+    var name: String,
+    var isNumeric: Boolean,
+    var category: FactorCategory
+)
+

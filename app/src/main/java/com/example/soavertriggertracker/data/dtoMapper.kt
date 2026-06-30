@@ -1,5 +1,7 @@
 package com.example.soavertriggertracker.data
 
+import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTO
+import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTOout
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorRecordDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorRecordDTOout
 import com.example.soavertriggertracker.data.dataTransferObjs.LogDTO
@@ -99,5 +101,29 @@ fun Tag.toDTO(): TagDTOout {
         id = id,
         value = value,
         logId = null
+    )
+}
+
+/**
+ * Processes a Factor to a FactorDTO
+ */
+fun Factor.toDTOout(): FactorDTOout {
+    return FactorDTOout(
+        id = id,
+        name = name,
+        isNumeric = isNumeric,
+        category = category
+    )
+}
+
+/**
+ * Processes a FactorDTO to a Factor
+ */
+fun FactorDTO.toDomain(): Factor {
+    return Factor(
+        id = id,
+        name = name,
+        isNumeric = isNumeric,
+        category = category
     )
 }

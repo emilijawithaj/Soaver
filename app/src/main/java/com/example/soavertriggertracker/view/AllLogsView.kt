@@ -1,6 +1,7 @@
 package com.example.soavertriggertracker.view
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,13 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,22 +41,29 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.soavertriggertracker.MainNavigationBar
 import com.example.soavertriggertracker.MainNavigationRail
 import com.example.soavertriggertracker.R
 import com.example.soavertriggertracker.ui.theme.SoaverTriggerTrackerTheme
+import com.example.soavertriggertracker.viewModel.AllLogsViewModel
+import com.example.soavertriggertracker.viewModel.LogOverviewUIModel
 
 class AllLogsView {
 
     @Composable
     fun AllLogsScreen(
-        titles: List<String> = listOf("test1", "test2", "test3"), //todo real data
-        logFactorRecords: List<String> = listOf("test1", "test2", "test3"), //todo real data
+        viewModel: AllLogsViewModel = hiltViewModel(),
         windowSize: WindowSizeClass
     ) {
+        val logs by viewModel.logItems.collectAsStateWithLifecycle()
+        val loadingError by viewModel.error.collectAsStateWithLifecycle()
+        val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
+        val onSearchTextChange = viewModel::onSearchQueryChange
+        val onRetryLoad = viewModel::loadLogs
+
         when (windowSize.widthSizeClass) {
             WindowWidthSizeClass.Compact ->
                 Scaffold(
@@ -58,8 +71,11 @@ class AllLogsView {
                     bottomBar = { MainNavigationBar() }) { padding ->
                     LogsScreen(
                         modifier = Modifier.padding(padding),
-                        titles = titles,
-                        logFactorRecords = logFactorRecords
+                        logs = logs,
+                        loadingError = loadingError,
+                        searchText = searchText,
+                        onSearchTextChange = onSearchTextChange,
+                        onRetryLoad = onRetryLoad
                     )
                 }
 
@@ -68,8 +84,11 @@ class AllLogsView {
                     MainNavigationRail()
                     LogsScreen(
                         modifier = Modifier.weight(1f),
-                        titles = titles,
-                        logFactorRecords = logFactorRecords
+                        logs = logs,
+                        loadingError = loadingError,
+                        searchText = searchText,
+                        onSearchTextChange = onSearchTextChange,
+                        onRetryLoad = onRetryLoad
                     )
                 }
 
@@ -80,20 +99,55 @@ class AllLogsView {
     @Composable
     fun LogsScreen(
         modifier: Modifier = Modifier,
-        titles: List<String>,
-        logFactorRecords: List<String>
+        logs: List<LogOverviewUIModel> = listOf(),
+        loadingError: Boolean,
+        searchText: String,
+        onSearchTextChange: (String) -> Unit,
+        onRetryLoad: () -> Unit
     ) {
 
         Column(
             modifier = modifier
-                .padding(10.dp)
+                .padding(10.dp),
+            horizontalAlignment = CenterHorizontally
         ) {
-            SearchBar(modifier = Modifier.fillMaxWidth())
-            LogCardColumn(
-                modifier = Modifier.weight(1f),
-                titles = titles,
-                logFactorRecords = logFactorRecords
+            SearchBar(
+                modifier = Modifier.fillMaxWidth(),
+                searchText = searchText,
+                onSearchTextChange = onSearchTextChange
             )
+            if (loadingError) {
+                Column(
+                    modifier = modifier.padding(16.dp),
+                ) {
+                    Text(
+                        modifier = Modifier.align(CenterHorizontally),
+                        text = stringResource(R.string.error_loading_logs),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    OutlinedButton(
+                        modifier = Modifier
+                            .align(CenterHorizontally)
+                            .padding(16.dp),
+                        onClick = onRetryLoad
+                    ) {
+                        Text(text = stringResource(R.string.retry))
+                    }
+                }
+            } else if (logs.isEmpty()) {
+                Text(
+                    modifier = modifier.padding(16.dp),
+                    text = stringResource(R.string.no_logs_found),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            } else {
+                LogCardColumn(
+                    modifier = Modifier.weight(1f),
+                    logs = logs
+                )
+            }
         }
 
     }
@@ -105,8 +159,7 @@ class AllLogsView {
     @Composable
     fun LogCardColumn(
         modifier: Modifier = Modifier,
-        titles: List<String>,
-        logFactorRecords: List<String>
+        logs: List<LogOverviewUIModel> = listOf(),
     ) {
         var expanded by
         rememberSaveable { mutableStateOf(setOf<String>()) } //holds currently expanded cards
@@ -124,20 +177,21 @@ class AllLogsView {
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(titles) { title -> //items = items in the column, any component must be item
+                items(logs) { log -> //items = items in the column, any component must be item
                     LogCard(
                         modifier = Modifier,
-                        text = title,
-                        expanded = expanded.contains(title),
+                        text = log.title,
+                        expanded = expanded.contains(log.title),
                         onCardClick = {
-                            if (expanded.contains(title)) {
-                                expanded -= title //(remove)
+                            if (expanded.contains(log.title)) {
+                                expanded -= log.title //(remove)
                             } else {
-                                expanded += title
+                                expanded += log.title
                             }
                         },
-                        logFactorRecords = logFactorRecords,
-                        editButtonOnClick = { /*TODO*/ }
+                        logFactorRecords = log.records,
+                        editButtonOnClick = { /*TODO*/ },
+                        logTags = log.tags
                     )
                 }
             }
@@ -156,7 +210,8 @@ class AllLogsView {
         expanded: Boolean = false,
         onCardClick: () -> Unit,
         logFactorRecords: List<String>,
-        editButtonOnClick: () -> Unit
+        editButtonOnClick: () -> Unit,
+        logTags: List<String>
     ) {
 
         //whole thing
@@ -187,19 +242,52 @@ class AllLogsView {
 
                 //details
                 if (expanded) {
-                    Column() {
-                        for (i in logFactorRecords) {
-                            Text(
-                                text = i,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                            )
-                        }
-                    }
+                    LogCardDetails(
+                        modifier = Modifier,
+                        logFactorRecords = logFactorRecords,
+                        logTags = logTags
+                    )
                 }
             }
         }
     }
 
+    @Composable
+    fun LogCardDetails(
+        modifier: Modifier = Modifier,
+        logFactorRecords: List<String>,
+        logTags: List<String>
+    ) {
+        Column(
+            modifier = modifier
+                .padding(bottom = 16.dp)
+                .padding(horizontal = 16.dp)
+        ) {
+            for (i in logFactorRecords) {
+                Text(
+                    text = i,
+                    modifier = Modifier.padding(bottom = 3.dp)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .horizontalScroll(
+                        enabled = true,
+                        state = rememberScrollState()
+                    )
+            ) {
+                for (i in logTags) {
+                    Card(shape = MaterialTheme.shapes.extraSmall) {
+                        Text(
+                            text = i,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     @Composable
     fun LogCardMainDisplay(
@@ -227,7 +315,7 @@ class AllLogsView {
                 modifier = modifier
                     .weight(1f)
                     .padding(horizontal = 8.dp),
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.titleMedium
             )
             ElevatedButton(
                 onClick = { editButtonOnClick() }) {
@@ -240,12 +328,16 @@ class AllLogsView {
      * Search bar for filtering logs TODO implement functionality
      */
     @Composable
-    fun SearchBar(modifier: Modifier = Modifier) {
+    fun SearchBar(
+        modifier: Modifier = Modifier,
+        searchText: String,
+        onSearchTextChange: (String) -> Unit
+    ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = stringResource(R.string.empty_string),
+            value = searchText,
             placeholder = { Text(stringResource(R.string.search_logs_field)) }, //placeholder needs a Text built within it
-            onValueChange = {},
+            onValueChange = onSearchTextChange,
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -258,14 +350,22 @@ class AllLogsView {
 
     //previewer
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Preview(showBackground = true, device = "spec:width=411dp,height=891dp")
     @Composable
     fun AllLogsPreview() {
         SoaverTriggerTrackerTheme {
-            AllLogsView().AllLogsScreen(
-                windowSize =
-                    WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
-            )
+            Column {
+                OutlinedButton(
+                    modifier = Modifier.padding(10.dp),
+                    onClick = {}) {
+                    Text(text = "Retry")
+                }
+                FilledTonalButton(
+                    modifier = Modifier.padding(10.dp),
+                    onClick = {}
+                ) {
+                    Text(text = "Retry")
+                }
+            }
         }
     }
 }

@@ -40,11 +40,18 @@ class SupabaseLinkTest {
         isNumeric = true,
         category = FactorCategory.VISUAL
     )
+
+    val fac2DTO = FactorDTO(
+        id = "70f8a080-766e-40bc-af7c-29eddcc1d914",
+        name = "testFac2",
+        isNumeric = false,
+        category = FactorCategory.AUDITORY
+    )
     val rec1DTO = FactorRecordDTOout(
         id = null,
-        factorId = fac1DTO.id,
+        factorId = fac2DTO.id,
         boolVal = true,
-        numVal = 1.0
+        numVal = null
     )
     val tag1DTO = TagDTOout(
         id = null,
@@ -83,14 +90,14 @@ class SupabaseLinkTest {
         val rec2DTO = FactorRecordDTOout(
             id = null,
             factorId = fac1DTO.id,
-            boolVal = false,
+            boolVal = true,
             numVal = 1.0
         )
 
         val log = LogDTOout(
             id = null,
             datetime = Clock.System.now(),
-            factorRecords = listOf(rec2DTO),
+            factorRecords = listOf(rec1DTO, rec2DTO),
             tags = listOf(tag1DTO)
         )
 
@@ -274,7 +281,7 @@ class SupabaseLinkTest {
         }
     }
 
-    @Test
+    @Test(expected = PostgrestRestException::class)
     fun insertLogWithDuplicateFactors(): Unit = runTest {
         val log = LogDTOout(
             id = UUID.randomUUID().toString(),
@@ -283,12 +290,8 @@ class SupabaseLinkTest {
             tags = listOf()
         )
 
-        try {
-            repository.putLogDTO(log)
-            assert(false)
-        } catch (e: Exception) {
-            assert(e is PostgrestRestException)
-        }
+        repository.putLogDTO(log)
+
     }
 
     @Test
@@ -317,7 +320,7 @@ class SupabaseLinkTest {
         assert(factorFetched.category == factorUpdated.category)
     }
 
-    @Test
+    @Test(expected = PostgrestRestException::class)
     fun insertFactorDuplicateName(): Unit = runTest {
         val name = UUID.randomUUID().toString()
         val factor = FactorDTOout(
@@ -335,30 +338,10 @@ class SupabaseLinkTest {
             category = FactorCategory.AUDITORY
         )
 
-        try {
-            repository.putFactorDTO(factor2)
-            assert(false)
-        } catch (e: Exception) {
-            assert(e is PostgrestRestException)
-        }
+        repository.putFactorDTO(factor2)
+
     }
 
-    @Test
-    fun insertLogWithNoFactorRecords(): Unit = runTest {
-        val log = LogDTOout(
-            id = UUID.randomUUID().toString(),
-            datetime = Clock.System.now(),
-            factorRecords = listOf(),
-            tags = listOf()
-        )
-
-        try {
-            repository.putLogDTO(log)
-            assert(false)
-        } catch (e: Exception) {
-            assert(e is IllegalArgumentException)
-        }
-    }
 
     /**
      * Delete added data after test

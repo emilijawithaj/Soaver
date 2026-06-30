@@ -7,4 +7,8 @@
     <string name="home_nav_text">Home</string>
     <string name="factors_nav_text">All Factors</string>
     <string name="logs_nav_text">Logs</string>
+    <string name="error_loading_logs">Error loading logs</string>
+    <string name="no_logs_found">No logs found</string>
+    <string name="log_from">Log from:</string>
+    <string name="retry">Retry</string>
 </resources>

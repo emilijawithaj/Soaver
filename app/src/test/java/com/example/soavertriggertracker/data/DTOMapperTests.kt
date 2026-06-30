@@ -1,14 +1,9 @@
-package com.example.soavertriggertracker
+package com.example.soavertriggertracker.data
 
-import com.example.soavertriggertracker.data.FactorRecord
-import com.example.soavertriggertracker.data.Log
-import com.example.soavertriggertracker.data.Tag
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorRecordDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.LogDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.TagDTO
-import com.example.soavertriggertracker.data.toDTO
-import com.example.soavertriggertracker.data.toDomain
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.time.Clock
@@ -19,7 +14,8 @@ class DTOMapperTests {
     val fac1DTO = FactorDTO(
         id = "poi",
         name = "testFac",
-        isNumeric = true
+        isNumeric = true,
+        category = FactorCategory.VISUAL
     )
     val rec1DTO = FactorRecordDTO(
         id = "abc",
@@ -45,7 +41,6 @@ class DTOMapperTests {
     )
 
     //Domain
-
 
 
     /**
@@ -133,7 +128,8 @@ class DTOMapperTests {
             factorName = "testFac",
             isNumeric = true,
             wasPresent = true,
-            numValue = 1.0
+            numValue = 1.0,
+            factorCategory = FactorCategory.VISUAL
         )
         val factR2 = FactorRecord(
             id = null,
@@ -141,7 +137,8 @@ class DTOMapperTests {
             factorName = "testFac",
             isNumeric = false,
             wasPresent = false,
-            numValue = null
+            numValue = null,
+            factorCategory = FactorCategory.VISUAL
         )
         val tag = Tag(
             id = null,

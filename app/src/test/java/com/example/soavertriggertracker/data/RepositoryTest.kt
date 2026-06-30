@@ -1,18 +1,9 @@
-package com.example.soavertriggertracker
+package com.example.soavertriggertracker.data
 
-import com.example.soavertriggertracker.data.Factor
-import com.example.soavertriggertracker.data.FactorCategory
-import com.example.soavertriggertracker.data.FactorRecord
-import com.example.soavertriggertracker.data.Log
-import com.example.soavertriggertracker.data.LogRepositoryImpl
-import com.example.soavertriggertracker.data.LogSupabaseLink
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.FactorRecordDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.LogDTO
 import com.example.soavertriggertracker.data.dataTransferObjs.TagDTO
-import com.example.soavertriggertracker.data.toDTO
-import com.example.soavertriggertracker.data.toDTOout
-import com.example.soavertriggertracker.data.toDomain
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

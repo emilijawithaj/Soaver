@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.4.0"
+    alias(libs.plugins.hilt)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -74,6 +76,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.play.services.wearable)
     implementation(libs.androidx.compose.material.icons.extended)
+    testImplementation(libs.mockk)
 
 
     implementation(libs.androidx.navigation.compose)
@@ -89,8 +92,9 @@ dependencies {
     implementation(libs.ktor.utils)
 
     implementation(libs.hilt.android)
-    annotationProcessor(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.error.prone.annotations)
 
     testImplementation(libs.kotlinx.coroutines.test)
 }
