@@ -168,4 +168,33 @@ class RepositoryTest {
 
         repository.putLog(log)
     }
+
+    @Test
+    fun updateLog() = runTest {
+        val log = Log(
+            id = "123",
+            datetime = Clock.System.now(),
+            factorRecords = arrayListOf(recdto.toDomain()),
+            tags = arrayListOf()
+        )
+        coEvery { mockLink.deleteLogDTO("123") } returns Unit
+        coEvery { mockLink.putLogDTO(log.toDTO()) } returns "123"
+
+        repository.updateLog(log)
+
+        coVerify(exactly = 1) { mockLink.deleteLogDTO("123") }
+        coVerify(exactly = 1) { mockLink.putLogDTO(log.toDTO()) }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun updateLogWithNullId(): Unit = runTest {
+        val log = Log(
+            id = null,
+            datetime = Clock.System.now(),
+            factorRecords = arrayListOf(recdto.toDomain()),
+            tags = arrayListOf()
+        )
+        repository.updateLog(log)
+    }
+
 }

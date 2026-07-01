@@ -8,7 +8,7 @@ interface LogRepository {
     suspend fun getLog(id: String): Log?
     suspend fun deleteLog(id: String)
 
-    //suspend fun updateLog(log: Log)
+    suspend fun updateLog(log: Log)
     suspend fun putFactor(factor: Factor): String
     suspend fun getFactor(id: String): Factor?
     suspend fun getFactors(): List<Factor>
@@ -50,6 +50,19 @@ class LogRepositoryImpl @Inject constructor(
      */
     override suspend fun deleteLog(id: String) {
         supabaseLink.deleteLogDTO(id)
+    }
+
+    /**
+     * Updates log by delete and readd
+     * @throws IllegalArgumentException if log id is null
+     */
+    override suspend fun updateLog(log: Log) {
+        if (log.id == null) {
+            throw IllegalArgumentException("Log id cannot be null when updating")
+        }
+
+        supabaseLink.deleteLogDTO(log.id!!)
+        supabaseLink.putLogDTO(log.toDTO())
     }
 
     /**
