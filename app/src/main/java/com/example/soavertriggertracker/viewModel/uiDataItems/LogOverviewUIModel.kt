@@ -1,4 +1,4 @@
-package com.example.soavertriggertracker.viewModel
+package com.example.soavertriggertracker.viewModel.uiDataItems
 
 /**
  * Data template for log passing to the UI

@@ -1,7 +1,5 @@
 package com.example.soavertriggertracker.data
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +17,7 @@ class DataLoader @Inject constructor(
      * attempts to load logs and factors from the repository,
      * puts any exceptions thrown in respective errors
      */
-    suspend fun loadAll() = withContext(Dispatchers.IO) {
+    suspend fun loadAll() {
         try {
             logs = repository.getLogs()
             logError = null
@@ -39,7 +37,7 @@ class DataLoader @Inject constructor(
     /**
      * attempts to load logs from the repository, putting any exceptions in logError
      */
-    suspend fun reloadLogs() = withContext(Dispatchers.IO) {
+    suspend fun reloadLogs(){
         try {
             logs = repository.getLogs()
             logError = null
@@ -51,7 +49,7 @@ class DataLoader @Inject constructor(
     /**
      * attempts to load factors from the repository, putting any exceptions in factorError
      */
-    suspend fun reloadFactors() = withContext(Dispatchers.IO) {
+    suspend fun reloadFactors(){
         try {
             factors = repository.getFactors()
             factorError = null

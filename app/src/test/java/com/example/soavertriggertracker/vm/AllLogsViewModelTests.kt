@@ -1,14 +1,13 @@
 package com.example.soavertriggertracker.vm
 
 import android.content.Context
-import com.example.soavertriggertracker.R
+import com.example.soavertriggertracker.data.DataLoader
 import com.example.soavertriggertracker.data.FactorCategory
 import com.example.soavertriggertracker.data.FactorRecord
 import com.example.soavertriggertracker.data.Log
-import com.example.soavertriggertracker.data.LogRepository
 import com.example.soavertriggertracker.data.Tag
 import com.example.soavertriggertracker.viewModel.AllLogsViewModel
-import io.mockk.coEvery
+import com.example.soavertriggertracker.viewModel.CommonDataProcessing
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -27,12 +26,16 @@ class AllLogsViewModelTests {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository = mockk<LogRepository>()
+    private val dataLoader = mockk<DataLoader>()
     private val context = mockk<Context>()
+    private val dataProcessor = CommonDataProcessing(context)
 
     @Before
     fun setup() {
-        every { context.getString(R.string.log_from) } returns "Log from"
+        every { context.getString(any(), *anyVararg()) } answers {
+            val args = it.invocation.args[1] as Array<*>
+            "Log from ${args[0]} at ${args[1]}"
+        }
     }
 
     @Test
@@ -66,8 +69,9 @@ class AllLogsViewModelTests {
             factorRecords = arrayListOf(rec1),
             tags = arrayListOf<Tag>(tag, tag2)
         )
-        coEvery { repository.getLogs() } returns listOf(log1, log2)
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns listOf(log1, log2)
+        every { dataLoader.logLoadingError() } returns null
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
 
         advanceUntilIdle()
 
@@ -83,8 +87,9 @@ class AllLogsViewModelTests {
 
     @Test
     fun loadLogs_error() = runTest {
-        coEvery { repository.getLogs() } throws Exception("test")
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns emptyList()
+        every { dataLoader.logLoadingError() } returns Exception("test")
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
 
         advanceUntilIdle()
 
@@ -93,13 +98,20 @@ class AllLogsViewModelTests {
 
     @Test
     fun loadRetry() = runTest {
-        coEvery { repository.getLogs() } throws Exception("test")
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns emptyList()
+        every { dataLoader.logLoadingError() } returns Exception("test")
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
         advanceUntilIdle()
         assert(viewModel.error.value)
 
+        every { dataLoader.getLogs() } returns listOf(Log(id = "1", datetime = Clock.System.now(), factorRecords = arrayListOf(
+            FactorRecord(id = "1", factorId = "1", wasPresent = true, numValue = 1.0, isNumeric = true, factorName = "test", factorCategory = FactorCategory.AUDITORY)), tags = arrayListOf()))
+        every { dataLoader.logLoadingError() } returns null
+
         viewModel.loadLogs()
-        coVerify(exactly = 2) { repository.getLogs() }
+        coVerify(exactly = 2) { dataLoader.getLogs() }
+        assert(!viewModel.error.value)
+        assert(viewModel.logItems.value.size == 1)
     }
 
     @Test
@@ -134,8 +146,9 @@ class AllLogsViewModelTests {
             factorRecords = arrayListOf(rec2),
             tags = arrayListOf<Tag>()
         )
-        coEvery { repository.getLogs() } returns listOf(log1, log2)
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns listOf(log1, log2)
+        every { dataLoader.logLoadingError() } returns null
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
         advanceUntilIdle()
 
         assert(viewModel.logItems.value.size == 2)
@@ -178,8 +191,9 @@ class AllLogsViewModelTests {
             factorRecords = arrayListOf(rec1),
             tags = arrayListOf<Tag>(tag2)
         )
-        coEvery { repository.getLogs() } returns listOf(log1, log2)
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns listOf(log1, log2)
+        every { dataLoader.logLoadingError() } returns null
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
         advanceUntilIdle()
 
         assert(viewModel.logItems.value.size == 2)
@@ -207,8 +221,9 @@ class AllLogsViewModelTests {
             factorRecords = arrayListOf(rec1),
             tags = arrayListOf<Tag>()
         )
-        coEvery { repository.getLogs() } returns listOf(log1)
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns listOf(log1)
+        every { dataLoader.logLoadingError() } returns null
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
         advanceUntilIdle()
 
         val localDT = log1.datetime.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -246,8 +261,9 @@ class AllLogsViewModelTests {
             factorRecords = arrayListOf(rec1, rec2),
             tags = arrayListOf<Tag>()
         )
-        coEvery { repository.getLogs() } returns listOf(log1)
-        val viewModel = AllLogsViewModel(repository, context)
+        every { dataLoader.getLogs() } returns listOf(log1)
+        every { dataLoader.logLoadingError() } returns null
+        val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
         advanceUntilIdle()
 
         assert(viewModel.logItems.value[0].records.size == 1)

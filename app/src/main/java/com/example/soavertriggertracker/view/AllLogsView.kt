@@ -49,10 +49,9 @@ import com.example.soavertriggertracker.MainNavigationRail
 import com.example.soavertriggertracker.R
 import com.example.soavertriggertracker.ui.theme.SoaverTriggerTrackerTheme
 import com.example.soavertriggertracker.viewModel.AllLogsViewModel
-import com.example.soavertriggertracker.viewModel.LogOverviewUIModel
+import com.example.soavertriggertracker.viewModel.uiDataItems.LogOverviewUIModel
 
-class AllLogsView {
-
+object AllLogsView {
     @Composable
     fun AllLogsScreen(
         viewModel: AllLogsViewModel = hiltViewModel(),
@@ -114,7 +113,8 @@ class AllLogsView {
             SearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 searchText = searchText,
-                onSearchTextChange = onSearchTextChange
+                onSearchTextChange = onSearchTextChange,
+                searchPlaceholder = stringResource(R.string.search_logs_field)
             )
             if (loadingError) {
                 Column(
@@ -253,6 +253,42 @@ class AllLogsView {
     }
 
     @Composable
+    fun LogCardMainDisplay(
+        modifier: Modifier = Modifier,
+        text: String,
+        expanded: Boolean,
+        editButtonOnClick: () -> Unit
+    ) {
+        Row(
+            modifier = modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = CenterVertically,
+        )
+        {
+
+            Icon(
+                imageVector = if (!expanded) {
+                    Icons.Filled.ExpandMore
+                } else {
+                    Icons.Filled.ExpandLess
+                },
+                contentDescription = null
+            )
+            Text(
+                text = text,
+                modifier = modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+                style = MaterialTheme.typography.titleMedium
+            )
+            ElevatedButton(
+                onClick = { editButtonOnClick() }) {
+                Text(text = stringResource(R.string.edit))
+            }
+        }
+    }
+
+
+    @Composable
     fun LogCardDetails(
         modifier: Modifier = Modifier,
         logFactorRecords: List<String>,
@@ -288,84 +324,52 @@ class AllLogsView {
             }
         }
     }
+}
 
-    @Composable
-    fun LogCardMainDisplay(
-        modifier: Modifier = Modifier,
-        text: String,
-        expanded: Boolean,
-        editButtonOnClick: () -> Unit
-    ) {
-        Row(
-            modifier = modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = CenterVertically,
-        )
-        {
-
-            Icon(
-                imageVector = if (!expanded) {
-                    Icons.Filled.ExpandMore
-                } else {
-                    Icons.Filled.ExpandLess
-                },
-                contentDescription = null
-            )
-            Text(
-                text = text,
-                modifier = modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp),
-                style = MaterialTheme.typography.titleMedium
-            )
-            ElevatedButton(
-                onClick = { editButtonOnClick() }) {
-                Text(text = stringResource(R.string.edit))
+//previewer
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Composable
+fun AllLogsPreview() {
+    SoaverTriggerTrackerTheme {
+        Column {
+            OutlinedButton(
+                modifier = Modifier.padding(10.dp),
+                onClick = {}) {
+                Text(text = "Retry")
             }
-        }
-    }
-
-    /**
-     * Search bar for filtering logs TODO implement functionality
-     */
-    @Composable
-    fun SearchBar(
-        modifier: Modifier = Modifier,
-        searchText: String,
-        onSearchTextChange: (String) -> Unit
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = searchText,
-            placeholder = { Text(stringResource(R.string.search_logs_field)) }, //placeholder needs a Text built within it
-            onValueChange = onSearchTextChange,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null
-                )
-            }
-        )
-    }
-
-
-    //previewer
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Composable
-    fun AllLogsPreview() {
-        SoaverTriggerTrackerTheme {
-            Column {
-                OutlinedButton(
-                    modifier = Modifier.padding(10.dp),
-                    onClick = {}) {
-                    Text(text = "Retry")
-                }
-                FilledTonalButton(
-                    modifier = Modifier.padding(10.dp),
-                    onClick = {}
-                ) {
-                    Text(text = "Retry")
-                }
+            FilledTonalButton(
+                modifier = Modifier.padding(10.dp),
+                onClick = {}
+            ) {
+                Text(text = "Retry")
             }
         }
     }
 }
+
+
+/**
+ * Search bar for filtering logs
+ */
+@Composable
+fun SearchBar(
+    modifier: Modifier = Modifier,
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
+    searchPlaceholder: String
+) {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = searchText,
+        placeholder = { Text(searchPlaceholder) }, //placeholder needs a Text built within it
+        onValueChange = onSearchTextChange,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null
+            )
+        }
+    )
+}
+
+
