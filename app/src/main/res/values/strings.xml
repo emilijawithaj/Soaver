@@ -9,6 +9,12 @@
     <string name="logs_nav_text">Logs</string>
     <string name="error_loading_logs">Error loading logs</string>
     <string name="no_logs_found">No logs found</string>
-    <string name="log_from">Log from:</string>
     <string name="retry">Retry</string>
+    <string name="search_factors">Search Factors</string>
+    <string name="frequency_in_factors">freq. %1$d%%</string>
+    <string name="all_logs_page_log_titles">Log from %1$s at %2$s</string>
+    <string name="logs_in_factor_card_title">%1$s %2$s</string>
+    <string name="error_loading_factor_data">Error loading factor data</string>
+    <string name="no_factors_found_error">No factors found</string>
+    <string name="factor_frequency_template">%1$s%%</string>
 </resources>
