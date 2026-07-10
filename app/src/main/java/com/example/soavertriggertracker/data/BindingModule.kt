@@ -20,4 +20,10 @@ abstract class BindingModule {
     abstract fun bindLogSupabaseLink(
         logSupabaseLinkImpl: LogSupabaseLinkImpl
     ): LogSupabaseLink
+
+    @Binds
+    @Singleton
+    abstract fun bindTriggerSupabaseLink(
+        triggerSupabaseLinkImpl: TriggerSupabaseLinkImpl
+    ): TriggerSupabaseLink
 }
