@@ -191,4 +191,34 @@ class DTOMapperTests {
             assertEquals("FactorRecords of a Log cannot be empty", e.message)
         }
     }
+
+    @Test(expected = IllegalStateException::class)
+    fun log_with_empty_tag_to_DTO() {
+        val tag = Tag(id = null, value = "")
+        val log = Log(
+            id = null,
+            factorRecords = arrayListOf(
+                FactorRecord(
+                    id = null,
+                    factorId = "poi",
+                    factorName = "testFac",
+                    isNumeric = true,
+                    wasPresent = true,
+                    numValue = 1.0,
+                    factorCategory = FactorCategory.VISUAL
+                )
+            ),
+            tags = arrayListOf(tag),
+            datetime = Clock.System.now()
+        )
+
+        log.toDTO()
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun empty_factor_name_to_DTO() {
+        val factor =
+            Factor(id = null, name = "", isNumeric = true, category = FactorCategory.INTERNAL)
+        factor.toDTOout()
+    }
 }

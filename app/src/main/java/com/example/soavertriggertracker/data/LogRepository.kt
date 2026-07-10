@@ -31,6 +31,8 @@ class LogRepositoryImpl @Inject constructor(
     /**
      * Attempts to insert a log into the db
      * @return id of inserted log
+     * @throws IllegalStateException if log has no factor records
+     * @throws IllegalStateException if a tag is an empty string
      */
     override suspend fun putLog(log: Log): String {
         val logDTO = log.toDTO()
@@ -55,6 +57,7 @@ class LogRepositoryImpl @Inject constructor(
     /**
      * Updates log by delete and readd
      * @throws IllegalArgumentException if log id is null
+     * @throws IllegalStateException if log has no factor records
      */
     override suspend fun updateLog(log: Log) {
         if (log.id == null) {
@@ -68,6 +71,7 @@ class LogRepositoryImpl @Inject constructor(
     /**
      * Attempts to insert a Factor into the db
      * @return id of inserted factor
+     * @throws IllegalStateException if factor name is empty string
      */
     override suspend fun putFactor(factor: Factor): String {
         val factorDTO = factor.toDTOout()

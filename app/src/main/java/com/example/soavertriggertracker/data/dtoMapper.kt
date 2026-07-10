@@ -64,6 +64,7 @@ fun TagDTO.toDomain(): Tag {
  * Processes a Log to a LogDTO
  * @return LogDTO
  * @throws IllegalStateException if a Log with no FactorRecords is processed
+ * @throws IllegalStateException if a tag has value of empty string
  */
 fun Log.toDTO(): LogDTOout {
     if (factorRecords.isEmpty()) {
@@ -80,7 +81,7 @@ fun Log.toDTO(): LogDTOout {
 
 /**
  * Processes a FactorRecord to a FactorRecordDTO
- * @return FactorRecordDTO
+ * @return FactorRecordDTOout
  */
 fun FactorRecord.toDTO(): FactorRecordDTOout {
     return FactorRecordDTOout(
@@ -95,8 +96,13 @@ fun FactorRecord.toDTO(): FactorRecordDTOout {
 /**
  * Processes a Tag to a TagDTO
  * @return TagDTO
+ * @throws IllegalStateException if tag value is nothing
  */
 fun Tag.toDTO(): TagDTOout {
+    if (value == "") {
+        throw IllegalStateException("Tag value cannot be empty string")
+    }
+
     return TagDTOout(
         id = id,
         value = value,
@@ -106,8 +112,14 @@ fun Tag.toDTO(): TagDTOout {
 
 /**
  * Processes a Factor to a FactorDTO
+ * @throws IllegalStateException if factor name is set to empty string
+ * @return Factor as an outgoing DTO
  */
 fun Factor.toDTOout(): FactorDTOout {
+    if (name == "") {
+        throw IllegalStateException("Factor name cannot be empty string")
+    }
+
     return FactorDTOout(
         id = id,
         name = name,
@@ -118,6 +130,7 @@ fun Factor.toDTOout(): FactorDTOout {
 
 /**
  * Processes a FactorDTO to a Factor
+ * @return factor as a Factor
  */
 fun FactorDTO.toDomain(): Factor {
     return Factor(
