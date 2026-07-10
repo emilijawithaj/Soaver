@@ -8,6 +8,7 @@ import com.example.soavertriggertracker.data.Log
 import com.example.soavertriggertracker.data.Tag
 import com.example.soavertriggertracker.viewModel.AllLogsViewModel
 import com.example.soavertriggertracker.viewModel.CommonDataProcessing
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -104,11 +105,12 @@ class AllLogsViewModelTests {
         advanceUntilIdle()
         assert(viewModel.error.value)
 
+        coEvery { dataLoader.reloadLogs()} returns Unit
         every { dataLoader.getLogs() } returns listOf(Log(id = "1", datetime = Clock.System.now(), factorRecords = arrayListOf(
             FactorRecord(id = "1", factorId = "1", wasPresent = true, numValue = 1.0, isNumeric = true, factorName = "test", factorCategory = FactorCategory.AUDITORY)), tags = arrayListOf()))
         every { dataLoader.logLoadingError() } returns null
 
-        viewModel.loadLogs()
+        viewModel.reloadLogs()
         coVerify(exactly = 2) { dataLoader.getLogs() }
         assert(!viewModel.error.value)
         assert(viewModel.logItems.value.size == 1)

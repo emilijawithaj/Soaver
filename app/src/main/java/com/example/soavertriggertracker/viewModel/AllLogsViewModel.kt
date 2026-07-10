@@ -39,6 +39,13 @@ class AllLogsViewModel @Inject constructor(
 
     val error: StateFlow<Boolean> = _error.asStateFlow()
 
+    fun reloadLogs() {
+        viewModelScope.launch {
+            dataLoader.reloadLogs()
+            loadLogs()
+        }
+    }
+
 
     init { //load logs on init
         loadLogs()
@@ -48,12 +55,11 @@ class AllLogsViewModel @Inject constructor(
     /**
      * get logs from db
      */
-    fun loadLogs() {
-        viewModelScope.launch {
-            logs = dataLoader.getLogs()
-            _logItems.value = dataProcessor.logToUIItemMap(logs, R.string.all_logs_page_log_titles)
-            _error.value = dataLoader.logLoadingError() != null
-        }
+    private fun loadLogs() {
+        logs = dataLoader.getLogs()
+        _logItems.value = dataProcessor.logToUIItemMap(logs, R.string.all_logs_page_log_titles)
+        _error.value = dataLoader.logLoadingError() != null
+
     }
 
 

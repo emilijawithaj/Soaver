@@ -70,7 +70,7 @@ object AllFactorsView {
         val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
         val onSearchTextChange = viewModel::onSearchQueryChange
         val loadingError by viewModel.error.collectAsStateWithLifecycle()
-        val onRetryLoad = viewModel::loadData
+        val onRetryLoad = viewModel::reloadData
         val filtersSelected by viewModel.selectedFilters.collectAsStateWithLifecycle()
         val onFilterChange = viewModel::onFilterChange
 

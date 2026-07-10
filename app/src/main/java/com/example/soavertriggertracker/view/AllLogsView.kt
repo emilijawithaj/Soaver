@@ -61,7 +61,7 @@ object AllLogsView {
         val loadingError by viewModel.error.collectAsStateWithLifecycle()
         val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
         val onSearchTextChange = viewModel::onSearchQueryChange
-        val onRetryLoad = viewModel::loadLogs
+        val onRetryLoad = viewModel::reloadLogs
 
         when (windowSize.widthSizeClass) {
             WindowWidthSizeClass.Compact ->

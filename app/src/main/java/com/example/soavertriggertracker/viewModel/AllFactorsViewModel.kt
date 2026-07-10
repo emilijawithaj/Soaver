@@ -64,6 +64,13 @@ class AllFactorsViewModel @Inject constructor(
         _searchQuery.value = newText
     }
 
+    fun reloadData() {
+        viewModelScope.launch {
+            dataLoader.reloadFactors()
+            dataLoader.reloadLogs()
+            loadData()
+        }
+    }
 
     //setup - load factors and start mapping logs
     init {
@@ -76,32 +83,32 @@ class AllFactorsViewModel @Inject constructor(
     /**
      * Fetch all factors and logs and sort them in a single pass through logs
      */
-    fun loadData() {
-        viewModelScope.launch {
-                definedFactors = dataLoader.getFactors()
-                //create a list for each factor (ensures factors with lo logs still show)
-                for (factor in definedFactors) {
-                    logsPerFactor[factor.name] = mutableListOf()
-                }
-
-                val logs = dataLoader.getLogs()
-                val logUImodels = dataProcessor.logToUIItemMap(
-                    logs,
-                    R.string.logs_in_factor_card_title
-                )
-
-                //sort logs into factors
-                for (log in logUImodels) {
-                    for (factorName in log.records) {
-                        logsPerFactor.getOrPut(factorName) { mutableListOf() }
-                            .add(log)//adds new list if not present, adds to factor list
-                    }
-                }
-
-                //set the full list
-                allFactorModels.value = mapToFactorUIModels(logs.size)
-                _error.value = dataLoader.factorLoadingError() != null || dataLoader.logLoadingError() != null
+    private fun loadData() {
+        definedFactors = dataLoader.getFactors()
+        //create a list for each factor (ensures factors with lo logs still show)
+        for (factor in definedFactors) {
+            logsPerFactor[factor.name] = mutableListOf()
         }
+
+        val logs = dataLoader.getLogs()
+        val logUImodels = dataProcessor.logToUIItemMap(
+            logs,
+            R.string.logs_in_factor_card_title
+        )
+
+        //sort logs into factors
+        for (log in logUImodels) {
+            for (factorName in log.records) {
+                logsPerFactor.getOrPut(factorName) { mutableListOf() }
+                    .add(log)//adds new list if not present, adds to factor list
+            }
+        }
+
+        //set the full list
+        allFactorModels.value = mapToFactorUIModels(logs.size)
+        _error.value =
+            dataLoader.factorLoadingError() != null || dataLoader.logLoadingError() != null
+
     }
 
     /**
