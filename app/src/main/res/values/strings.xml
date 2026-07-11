@@ -17,4 +17,13 @@
     <string name="error_loading_factor_data">Error loading factor data</string>
     <string name="no_factors_found_error">No factors found</string>
     <string name="factor_frequency_template">%1$s%%</string>
+    <string name="no_of_logs">No of logs:</string>
+    <string name="reload_data_button_pt2">" Reload Data       -_-_-"</string>
+    <string name="reload_data_button_pt1">"-_-_-      "</string>
+    <string name="most_common_factors">"Most Common Factors:"</string>
+    <string name="your_triggers">" Your Triggers: "</string>
+    <string name="edit_triggers">Edit Triggers</string>
+    <string name="error_loading_trigger_data">Error loading trigger data</string>
+    <string name="no_saved_triggers_yet">No saved triggers yet</string>
+    <string name="no_common_factors_yet">No common factors identified</string>
 </resources>
