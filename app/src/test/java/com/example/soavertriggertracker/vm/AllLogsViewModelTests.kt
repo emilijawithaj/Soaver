@@ -79,8 +79,8 @@ class AllLogsViewModelTests {
         val itemsInVM = viewModel.logItems
         assert(!viewModel.error.value)
         assert(itemsInVM.value.size == 2)
-        assert(itemsInVM.value[0].records.first() == rec1.factorName)
-        assert(itemsInVM.value[1].records.first() == rec1.factorName)
+        assert(itemsInVM.value[0].factorsPresent.first() == rec1.factorName)
+        assert(itemsInVM.value[1].factorsPresent.first() == rec1.factorName)
         assert(itemsInVM.value[0].tags.size == 2)
         assert(itemsInVM.value[1].tags.size == 2)
         assert(itemsInVM.value[0].tags.first() == tag.value)
@@ -159,7 +159,7 @@ class AllLogsViewModelTests {
         advanceUntilIdle()
 
         assert(viewModel.logItems.value.size == 1)
-        assert(viewModel.logItems.value[0].records.first() == rec1.factorName)
+        assert(viewModel.logItems.value[0].factorsPresent.first() == rec1.factorName)
     }
 
     @Test
@@ -232,7 +232,7 @@ class AllLogsViewModelTests {
         val date = "${localDT.dayOfMonth}/${localDT.monthNumber}/${localDT.year}"
         val time = "${localDT.hour}:${localDT.minute}"
         assert(viewModel.logItems.value[0].title == "Log from $date at $time")
-        assert(viewModel.logItems.value[0].records.first() == rec1.factorName)
+        assert(viewModel.logItems.value[0].factorsPresent.first() == rec1.factorName)
         assert(viewModel.logItems.value[0].tags.isEmpty())
     }
 
@@ -268,7 +268,7 @@ class AllLogsViewModelTests {
         val viewModel = AllLogsViewModel(dataLoader, dataProcessor)
         advanceUntilIdle()
 
-        assert(viewModel.logItems.value[0].records.size == 1)
-        assert(viewModel.logItems.value[0].records.first() == rec2.factorName)
+        assert(viewModel.logItems.value[0].factorsPresent.size == 1)
+        assert(viewModel.logItems.value[0].factorsPresent.first() == rec2.factorName)
     }
 }

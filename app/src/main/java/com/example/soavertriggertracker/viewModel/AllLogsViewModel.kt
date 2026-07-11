@@ -67,7 +67,7 @@ class AllLogsViewModel @Inject constructor(
         _logItems.value =
             dataProcessor.logToUIItemMap(logs, R.string.all_logs_page_log_titles).filter {
                 it.title.uppercase().contains(search.uppercase())
-                        || it.records.any { rec ->
+                        || it.factorsPresent.any { rec ->
                     rec.uppercase().contains(search.uppercase())
                 }
                         || it.tags.any { rec -> rec.uppercase().contains(search.uppercase()) }

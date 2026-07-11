@@ -189,7 +189,7 @@ object AllLogsView {
                                 expanded += log.title
                             }
                         },
-                        logFactorRecords = log.records,
+                        logFactorRecords = log.factorsPresent,
                         editButtonOnClick = { /*TODO*/ },
                         logTags = log.tags
                     )

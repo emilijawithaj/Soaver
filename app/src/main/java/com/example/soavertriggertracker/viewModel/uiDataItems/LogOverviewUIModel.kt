@@ -5,7 +5,7 @@ package com.example.soavertriggertracker.viewModel.uiDataItems
  */
 data class LogOverviewUIModel(
     val title: String,
-    val records: List<String>,
+    val factorsPresent: List<String>,
     val tags: List<String>,
     val logID: String,
 )

@@ -30,83 +30,6 @@ class AllFactorsViewModelTests {
     private val context = mockk<Context>()
     private val dataProcessor = CommonDataProcessing(context)
 
-    //common constructs
-    val factor1 = Factor(
-        id = "1",
-        name = "test",
-        isNumeric = false,
-        category = FactorCategory.AUDITORY
-    )
-    val factor2 = Factor(
-        id = "2",
-        name = "trial2",
-        isNumeric = false,
-        category = FactorCategory.AUDITORY
-    )
-    val factor3 = Factor(
-        id = "3",
-        name = "test3",
-        isNumeric = false,
-        category = FactorCategory.VISUAL
-    )
-    val record1 = FactorRecord(
-        id = "abc",
-        factorId = "1",
-        wasPresent = true,
-        numValue = null,
-        isNumeric = false,
-        factorName = "test",
-        factorCategory = FactorCategory.AUDITORY
-    )
-    val record2 = FactorRecord(
-        id = "def",
-        factorId = "2",
-        wasPresent = true,
-        numValue = null,
-        isNumeric = false,
-        factorName = "trial2",
-        factorCategory = FactorCategory.AUDITORY
-    )
-    val record3 = FactorRecord(
-        id = "ghi",
-        factorId = "3",
-        wasPresent = true,
-        numValue = null,
-        isNumeric = false,
-        factorName = "test3",
-        factorCategory = FactorCategory.VISUAL
-    )
-    val record12 = FactorRecord(
-        id = "jkl",
-        factorId = "1",
-        wasPresent = true,
-        numValue = null,
-        isNumeric = false,
-        factorName = "test",
-        factorCategory = FactorCategory.AUDITORY
-    )
-    val record22 = FactorRecord(
-        id = "mno",
-        factorId = "2",
-        wasPresent = true,
-        numValue = null,
-        isNumeric = false,
-        factorName = "trial2",
-        factorCategory = FactorCategory.AUDITORY
-    )
-    val log1 = Log(
-        id = "123",
-        datetime = Clock.System.now(),
-        factorRecords = arrayListOf(record1, record2),
-        tags = arrayListOf<Tag>()
-    )
-    val log2 = Log(
-        id = "456",
-        datetime = Clock.System.now(),
-        factorRecords = arrayListOf(record12, record22, record3),
-        tags = arrayListOf<Tag>()
-    )
-
 
     @Before
     fun setup() {
@@ -254,4 +177,81 @@ class AllFactorsViewModelTests {
         advanceUntilIdle()
         assert(viewModel.factors.value.size == 2)
     }
+
+    //common constructs
+    val factor1 = Factor(
+        id = "1",
+        name = "test",
+        isNumeric = false,
+        category = FactorCategory.AUDITORY
+    )
+    val factor2 = Factor(
+        id = "2",
+        name = "trial2",
+        isNumeric = false,
+        category = FactorCategory.AUDITORY
+    )
+    val factor3 = Factor(
+        id = "3",
+        name = "test3",
+        isNumeric = false,
+        category = FactorCategory.VISUAL
+    )
+    val record1 = FactorRecord(
+        id = "abc",
+        factorId = "1",
+        wasPresent = true,
+        numValue = null,
+        isNumeric = false,
+        factorName = "test",
+        factorCategory = FactorCategory.AUDITORY
+    )
+    val record2 = FactorRecord(
+        id = "def",
+        factorId = "2",
+        wasPresent = true,
+        numValue = null,
+        isNumeric = false,
+        factorName = "trial2",
+        factorCategory = FactorCategory.AUDITORY
+    )
+    val record3 = FactorRecord(
+        id = "ghi",
+        factorId = "3",
+        wasPresent = true,
+        numValue = null,
+        isNumeric = false,
+        factorName = "test3",
+        factorCategory = FactorCategory.VISUAL
+    )
+    val record12 = FactorRecord(
+        id = "jkl",
+        factorId = "1",
+        wasPresent = true,
+        numValue = null,
+        isNumeric = false,
+        factorName = "test",
+        factorCategory = FactorCategory.AUDITORY
+    )
+    val record22 = FactorRecord(
+        id = "mno",
+        factorId = "2",
+        wasPresent = true,
+        numValue = null,
+        isNumeric = false,
+        factorName = "trial2",
+        factorCategory = FactorCategory.AUDITORY
+    )
+    val log1 = Log(
+        id = "123",
+        datetime = Clock.System.now(),
+        factorRecords = arrayListOf(record1, record2),
+        tags = arrayListOf<Tag>()
+    )
+    val log2 = Log(
+        id = "456",
+        datetime = Clock.System.now(),
+        factorRecords = arrayListOf(record12, record22, record3),
+        tags = arrayListOf<Tag>()
+    )
 }

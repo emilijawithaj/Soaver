@@ -347,7 +347,7 @@ object AllFactorsView {
             logs.forEach {
                 LogSummaryCard(
                     logText = it.title,
-                    logPresent = it.records + it.tags
+                    logPresent = it.factorsPresent + it.tags
                 )
             }
         }

@@ -30,7 +30,7 @@ constructor( @ApplicationContext private val context: Context) {
             val timeNice = "${localDateTime.hour}:${localDateTime.minute}"
             LogOverviewUIModel(
                 title = (context.getString(titleFormat, dateNice, timeNice)),
-                records = log.factorRecords.filter { it.wasPresent }
+                factorsPresent = log.factorRecords.filter { it.wasPresent }
                     .map { it.factorName }, //add only present factors
                 tags = log.tags.map { it.value },
                 logID = log.id!!

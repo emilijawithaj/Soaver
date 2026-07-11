@@ -98,7 +98,7 @@ class AllFactorsViewModel @Inject constructor(
 
         //sort logs into factors
         for (log in logUImodels) {
-            for (factorName in log.records) {
+            for (factorName in log.factorsPresent) {
                 logsPerFactor.getOrPut(factorName) { mutableListOf() }
                     .add(log)//adds new list if not present, adds to factor list
             }
