@@ -26,4 +26,16 @@
     <string name="error_loading_trigger_data">Error loading trigger data</string>
     <string name="no_saved_triggers_yet">No saved triggers yet</string>
     <string name="no_common_factors_yet">No common factors identified</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="welcome_title">Welcome to Soaver Trigger Tracker!</string>
+    <string name="sign_in_to_continue">Please sign in to continue.</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="sign_in_fail_text">Sign in failed, please check your details and try again.</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_prompt">Please provide a valid email and password to sign up.</string>
+    <string name="sign_up_error">Sign up error, please check your details or try again later.</string>
+    <string name="password_length_message">Password must be at least %1$d characters</string>
+    <string name="have_an_account">Have an account?</string>
 </resources>

@@ -26,4 +26,10 @@ abstract class BindingModule {
     abstract fun bindTriggerSupabaseLink(
         triggerSupabaseLinkImpl: TriggerSupabaseLinkImpl
     ): TriggerSupabaseLink
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
 }

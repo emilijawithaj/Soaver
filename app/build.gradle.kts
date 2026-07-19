@@ -32,12 +32,53 @@ android {
             localPropertiesFile.inputStream().use { properties.load(it) }
         }
 
-        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"${properties.getProperty("SUPABASE_PUBLISHABLE_KEY") ?: ""}\"")
-        buildConfigField("String", "SECRET", "\"${properties.getProperty("SECRET") ?: ""}\"")
-        buildConfigField("String", "SUPABASE_URL", "\"${properties.getProperty("SUPABASE_URL") ?: ""}\"")
+        buildConfigField(
+            "String",
+            "SUPABASE_PUBLISHABLE_KEY",
+            "\"${properties.getProperty("SUPABASE_PUBLISHABLE_KEY") ?: ""}\""
+        )
+        //buildConfigField("String", "SECRET", "\"${properties.getProperty("SECRET") ?: ""}\"")
+        buildConfigField(
+            "String",
+            "SUPABASE_URL",
+            "\"${properties.getProperty("SUPABASE_URL") ?: ""}\""
+        )
 
-        buildConfigField("String", "SUPABASE_TEST_USER_EMAIL", "\"${properties.getProperty("SUPABASE_TEST_USER_EMAIL") ?: ""}\"")
-        buildConfigField("String", "SUPABASE_TEST_USER_PASSWORD", "\"${properties.getProperty("SUPABASE_TEST_USER_PASSWORD") ?: ""}\"")
+        buildConfigField(
+            "String",
+            "SUPABASE_TEST_USER_EMAIL",
+            "\"${properties.getProperty("SUPABASE_TEST_USER_EMAIL") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPABASE_TEST_USER_PASSWORD",
+            "\"${properties.getProperty("SUPABASE_TEST_USER_PASSWORD") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPABASE_TEST_EMAIL_TWO",
+            "\"${properties.getProperty("SUPABASE_TEST_EMAIL_TWO") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPABASE_TEST_PASSWORD_TWO",
+            "\"${properties.getProperty("SUPABASE_TEST_PASSWORD_TWO") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPABASE_THROWAWAY_EMAIL_ONE",
+            "\"${properties.getProperty("SUPABASE_THROWAWAY_EMAIL_ONE") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPABASE_THROWAWAY_EMAIL_TWO",
+            "\"${properties.getProperty("SUPABASE_THROWAWAY_EMAIL_TWO") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPABASE_THROWAWAY_PASSWORD",
+            "\"${properties.getProperty("SUPABASE_THROWAWAY_PASSWORD") ?: ""}\""
+        )
     }
 
     buildTypes {
@@ -64,6 +105,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.window.size.class1)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

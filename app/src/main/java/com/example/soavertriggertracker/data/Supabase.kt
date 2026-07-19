@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.ExternalAuthAction
 import io.github.jan.supabase.auth.FlowType
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
@@ -34,9 +35,10 @@ object Supabase {
         ) {
             install(Postgrest)
             install(Auth) {
-                flowType = FlowType.PKCE //auth flow for mobile
-                scheme = "app"
-                host = "supabase.com"
+                flowType = FlowType.PKCE
+                scheme = "https"
+                host = "soaver.space"
+                defaultExternalAuthAction = ExternalAuthAction.CustomTabs() //use custom tabs rather than launching browser
             }
         }
     }
